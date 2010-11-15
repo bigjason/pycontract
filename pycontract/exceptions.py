@@ -6,3 +6,6 @@ class UnableToCleanError(ValueError):
         
         self.field = field
         self.value = value
+        
+class ValidationError(ValueError):
+    pass
