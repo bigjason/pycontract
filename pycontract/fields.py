@@ -11,8 +11,9 @@ class BaseField(object):
 
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, null=True, default=None, label=None, processors=[], validators=[]):
+    def __init__(self, order=None, null=True, default=None, label=None, processors=[], validators=[]):
 
+        self.order = order
         self.null = null
         self.default = default
         self.label = label
@@ -43,14 +44,16 @@ class BaseField(object):
     
     def apply_field_override(self, o):
         
+        order = o.pop("order", None)
         default = o.pop("default", None)
         label = o.pop("label", None)
         processors = o.pop("processors", None)
         validators = o.pop("validators", None)
         
         if len(o) > 0:
-            raise AttributeError("Unreconized parameter(s) in field override for field '%s'." % self.name)
-        
+            raise AttributeError("Unreconized parameter(s) in field_override for field '%s'." % self.name)
+
+        if order: self.order = order        
         if default: self.default = default
         if label: self.label = label
         if processors: self.processors = processors

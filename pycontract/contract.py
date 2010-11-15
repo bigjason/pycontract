@@ -43,6 +43,12 @@ class DataContractMetaClass(type):
         #create a read-only property for each field. 
         for name in fields:
             newattrs[name] = make_property(name)
+
+        # Sort the field order
+        if len([x for x in fields if fields[x].order != None]) > 0:
+            fields = OrderedDict(sorted(fields.items(), key=lambda f: f[1].order if f[1].order else f[1].label))
+        else:
+            fields = OrderedDict(sorted(fields.items(), key=lambda f: f[0]))
         newattrs["fields"] = fields
 
         return super(DataContractMetaClass, cls).__new__(cls, name, bases, newattrs)
@@ -84,7 +90,7 @@ class DataContract(object):
         except ValidationError:
             return False
         return True
-    
+
     def __hash__(self):
         return super(DataContract, self).__hash__()
 
@@ -125,4 +131,3 @@ class DataContract(object):
 
     def __ne__(self, other):
         return not self.__eq__(other)
-    
