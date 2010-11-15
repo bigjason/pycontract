@@ -53,7 +53,7 @@ class BaseField(object):
         """
         Runs all validators for this field.
         """
-        if self.null == False and value == None:
+        if not self.null and value == None:
             raise ValidationError("Null value not allowed.")
              
         for validator in self.validators:
