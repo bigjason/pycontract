@@ -10,7 +10,6 @@ class DataContractMetaClass(type):
             def getter(self):
                 return self[name]
             return property(fget=getter)
-
         fields = OrderedDict()
         parents = [b for b in bases if isinstance(b, DataContractMetaClass)]
         label_overrides = attrs.pop("label_overrides", {})
@@ -123,3 +122,4 @@ class DataContract(object):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+    

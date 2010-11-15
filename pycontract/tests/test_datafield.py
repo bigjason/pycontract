@@ -1,28 +1,15 @@
 import unittest
 
-from pycontract.field import Field
-
+from pycontract.fields import BaseField, StringField
+from pycontract.exceptions import UnableToCleanError, ValidationError
 
 class TestDataField(unittest.TestCase):
 
-    def test_init_types(self):
-        with self.assertRaises(ValueError):
-            Field(types=[str])
-
-    def test_is_valid_null(self):
-        field = Field(null=False)
-        self.assertTrue(field.is_valid("I am a string"))
-
-        field.null = True
-        self.assertTrue(field.is_valid(None))
+    def test_null(self):
+        field = StringField(null=False)
+        self.assertEqual(field.prepare_value("I am a string"), "I am a string")
 
         field.null = False
-        self.assertFalse(field.is_valid(None))
-
-    def test_is_valid_type(self):
-        field = Field(null=False, types=(int, str,))
-
-        self.assertTrue(field.is_valid("String Value"))
-        self.assertTrue(field.is_valid(231))
-        self.assertFalse(field.is_valid(False))
+        with self.assertRaises(ValidationError):
+            field.prepare_value(None)
         

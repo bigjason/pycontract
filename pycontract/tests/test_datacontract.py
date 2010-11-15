@@ -1,19 +1,20 @@
 import unittest
 import datetime
 
-from pycontract.field import Field
+from pycontract.fields import BaseField, StringField, NumberField, BooleanField, DateTimeField
+from pycontract.contract import DataContract
 
 class DataContractTester(DataContract):
     
-    string_value = Field(null=False, types=(str,))
-    int_value = Field(null=True, types=(int,))
-    date_value = Field(null=False, types=(datetime.datetime,))
+    string_value = StringField(null=False)
+    int_value = NumberField(null=True)
+    date_value = DateTimeField(null=False)
     
-    default_value = Field(null=False, types=(str,), default="I am a string!")
+    default_value = StringField(null=False, default="I am a string!")
     
 class DataContractChildTester(DataContractTester):
     
-    bool_value = Field(null=False, types=(bool,))
+    bool_value = BooleanField(null=False)
 
 class TestDataContract(unittest.TestCase):
 
@@ -30,9 +31,9 @@ class TestDataContract(unittest.TestCase):
         DATE_VAL = datetime.datetime.now()
         tester = DataContractTester(string_value=STRING_VAL, int_value=INT_VAL, date_value=DATE_VAL)
         
-        self.assertEqual(tester["string_value"], STRING_VAL)
-        self.assertEqual(tester["int_value"], INT_VAL)
-        self.assertEqual(tester["date_value"], DATE_VAL)
+        self.assertEqual(tester.string_value, STRING_VAL)
+        self.assertEqual(tester.int_value, INT_VAL)
+        self.assertEqual(tester.date_value, DATE_VAL)
 
     def test_init_with_bad_values(self):
         
@@ -44,9 +45,8 @@ class TestDataContract(unittest.TestCase):
         tester = DataContractTester()
         
         for field in tester.fields.itervalues():
-            self.assertIsInstance(field, Field)
+            self.assertIsInstance(field, BaseField)
             self.assertIsNotNone(field.name)
-            self.assertIsNotNone(field.types)
 
     def test_datacontract_len(self):
         
@@ -58,8 +58,8 @@ class TestDataContract(unittest.TestCase):
         BOOL_VAL = True
         tester = DataContractChildTester(string_value=STRING_VAL, bool_value=BOOL_VAL)
 
-        self.assertEqual(tester["string_value"], STRING_VAL)
-        self.assertEqual(tester["bool_value"], BOOL_VAL)
+        self.assertEqual(tester.string_value, STRING_VAL)
+        self.assertEqual(tester.bool_value, BOOL_VAL)
         
     def test_label_auto(self):
         
@@ -70,7 +70,7 @@ class TestDataContract(unittest.TestCase):
     def test_label_manual(self):
         LABEL_TEXT = "Label Here"
         class DCLabelTester(DataContract):
-            not_label = Field(label=LABEL_TEXT)
+            not_label = StringField(label=LABEL_TEXT)
             
         tester = DCLabelTester() 
         self.assertNotEqual(tester.fields["not_label"].name, tester.fields["not_label"].label)

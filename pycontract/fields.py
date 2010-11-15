@@ -53,7 +53,7 @@ class BaseField(object):
         """
         Runs all validators for this field.
         """
-        if not self.null and value == None:
+        if self.null == False and value == None:
             raise ValidationError("Null value not allowed.")
              
         for validator in self.validators:
@@ -74,7 +74,7 @@ class StringField(BaseField):
 
     def clean(self, value):
 
-        cleaned = str(value or "")
+        cleaned = str(value) if value != None else value
 
         return cleaned
 
@@ -82,7 +82,21 @@ class NumberField(BaseField):
 
     def clean(self, value):
         try:
-            cleaned = int(value)
+            cleaned = int(value) if value != None else value
         except:
-            raise UnableToCleanError("Unable to clean the values.")
+            raise UnableToCleanError("Unable to clean number value.")
         return cleaned
+    
+class BooleanField(BaseField):
+    
+    def clean(self, value):
+        try:
+            cleaned = bool(value) if value != None else value
+        except:
+            raise UnableToCleanError("Unable to clean boolean value.")
+        return cleaned
+
+class DateTimeField(BaseField):
+    
+    def clean(self, value):
+        return value
