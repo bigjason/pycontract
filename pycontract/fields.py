@@ -40,6 +40,21 @@ class BaseField(object):
             result = processor(result)
 
         return result
+    
+    def apply_field_override(self, o):
+        
+        default = o.pop("default", None)
+        label = o.pop("label", None)
+        processors = o.pop("processors", None)
+        validators = o.pop("validators", None)
+        
+        if len(o) > 0:
+            raise AttributeError("Unreconized parameter(s) in field override for field '%s'." % self.name)
+        
+        if default: self.default = default
+        if label: self.label = label
+        if processors: self.processors = processors
+        if validators: self.validators = validators
 
     @abc.abstractmethod
     def clean(self, value):

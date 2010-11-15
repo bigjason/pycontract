@@ -12,7 +12,7 @@ class DataContractMetaClass(type):
             return property(fget=getter)
         fields = OrderedDict()
         parents = [b for b in bases if isinstance(b, DataContractMetaClass)]
-        label_overrides = attrs.pop("label_overrides", {})
+        field_overrides = attrs.pop("field_overrides", {})
 
         # Grab the fields of any parent classes
         for kls in parents:
@@ -28,16 +28,16 @@ class DataContractMetaClass(type):
                     value.label = name
                 fields[name] = value
 
-        # Handle any label overrides
-        for name, value in fields.iteritems():
-            label_override = label_overrides.pop(name, None)
-            if label_override:
-                value.label = label_override
+        # Handle any field overrides
+        for name, field in fields.iteritems():
+            override = field_overrides.pop(name, None)
+            if override:
+                field.apply_field_override(override)
 
-        if len(label_overrides) > 0:
-            raise AttributeError("One or more label_overrides did not match a field.")
+        if len(field_overrides) > 0:
+            raise AttributeError("One or more field_overrides did not match a field.")
 
-        # Include all the attributes that are not Fields 
+        # Include all the attributes that are not BaseFields 
         newattrs = {name: value for name, value in attrs.iteritems() if not isinstance(value, BaseField)}
 
         #create a read-only property for each field. 
@@ -84,6 +84,9 @@ class DataContract(object):
         except ValidationError:
             return False
         return True
+    
+    def __hash__(self):
+        return super(DataContract, self).__hash__()
 
     ### Methods to emulate the behavior of a dictionary ###        
 
