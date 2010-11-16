@@ -10,6 +10,7 @@ class DataContractMetaClass(type):
             def getter(self):
                 return self[name]
             return property(fget=getter)
+        
         fields = OrderedDict()
         parents = [b for b in bases if isinstance(b, DataContractMetaClass)]
         field_overrides = attrs.pop("field_overrides", {})
@@ -49,6 +50,7 @@ class DataContractMetaClass(type):
             fields = OrderedDict(sorted(fields.items(), key=lambda f: f[1].order if f[1].order else f[1].label))
         else:
             fields = OrderedDict(sorted(fields.items(), key=lambda f: f[0]))
+
         newattrs["fields"] = fields
 
         return super(DataContractMetaClass, cls).__new__(cls, name, bases, newattrs)

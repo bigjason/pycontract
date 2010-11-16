@@ -41,19 +41,19 @@ class BaseField(object):
             result = processor(result)
 
         return result
-    
+
     def apply_field_override(self, o):
-        
+
         order = o.pop("order", None)
         default = o.pop("default", None)
         label = o.pop("label", None)
         processors = o.pop("processors", None)
         validators = o.pop("validators", None)
-        
-        if len(o) > 0:
-            raise AttributeError("Unreconized parameter(s) in field_override for field '%s'." % self.name)
 
-        if order: self.order = order        
+        if len(o) > 0:
+            raise AttributeError("Unrecognized parameter(s) in field_override for field '%s'." % self.name)
+
+        if order: self.order = order
         if default: self.default = default
         if label: self.label = label
         if processors: self.processors = processors
@@ -73,7 +73,7 @@ class BaseField(object):
         """
         if not self.null and value == None:
             raise ValidationError("Null value not allowed.")
-             
+
         for validator in self.validators:
             validator(value)
 
@@ -104,9 +104,9 @@ class NumberField(BaseField):
         except:
             raise UnableToCleanError("Unable to clean number value.")
         return cleaned
-    
+
 class BooleanField(BaseField):
-    
+
     def clean(self, value):
         try:
             cleaned = bool(value) if value != None else value
@@ -115,6 +115,32 @@ class BooleanField(BaseField):
         return cleaned
 
 class DateTimeField(BaseField):
+
+    def clean(self, value):
+        return value
+
+class ContractField(BaseField):
+    """
+    A field that contains a single DataContract.  This is equivalent to a one to one relationship in a database.
+    """
+
+    def clean(self, value):
+        return value
+
+    def validate(self, value):
+        """Override the validate to call validate on the fields of the datacontract child."""
+        for field in value.fields:
+            field.validate()
+            
+class ContractListField(BaseField):
+    """
+    A field that contains multiple DataContract objects.  This is equivalent to a one to many relationship in a database.
+    """
     
     def clean(self, value):
         return value
+    
+    def validate(self, value):
+        for contract in value:
+            for field in contract.fields:
+                field.validate()
