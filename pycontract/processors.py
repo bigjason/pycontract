@@ -9,3 +9,13 @@ def strip_white_space(value):
 
 def upper_case(value):
     return str(value).upper()
+
+class StringLeft(object):
+    
+    def __init__(self, max_characters):
+        self.max_characters = max_characters
+        
+    def __call__(self, value):
+        if value:
+            return str(value)[:self.max_characters]
+        return value 
