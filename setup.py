@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 from pycontract import VERSION
 
-with open(path.join(path.dirname(__file__), 'README.txt')) as f:
+with open(path.join(path.dirname(__file__), 'README.rst')) as f:
     readme = f.read()
 
 
