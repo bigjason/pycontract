@@ -4,7 +4,7 @@ Python Data Contracts
 A declarative data contract container type for Python
 ------------------------------------------------------
 
-*``Pycontracts is currently an internal beta and not ready for production use yet.``*
+*Pycontracts is currently an internal beta and not ready for production use yet.*
 
 
 Python data contracts (pycontracts in PyPi) is a  library for exchanging data between
