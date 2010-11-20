@@ -1,6 +1,7 @@
 ============================
 Python Data Contracts
 ============================
+*``Pycontracts is currently an internal beta and not ready for production use yet.``*
 A declarative data contract container type for Python
 ------------------------------------------------------
 
