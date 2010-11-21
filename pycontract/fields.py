@@ -1,10 +1,16 @@
 import abc
+import collections
+from datetime import datetime
+
+from dateutil import parser
 
 from pycontract.exceptions import UnableToCleanError, ValidationError
 
 class BaseField(object):
     """
     A field represents one unit of data on the DataContract.
+    
+    The default value can be a callable function.
     
     Note that the name is assigned at runtime when the datacontract class is created and is included for convenience only.
     """
@@ -28,6 +34,12 @@ class BaseField(object):
         Called when a field is set.
         """
         result = self.process(value)
+        if result is None:
+            if self.default:
+                if isinstance(self.default, collections.Callable):
+                    result = self.default()
+                else:
+                    result = self.default 
         result = self.clean(result)
         self.validate(result)
         return result
@@ -76,6 +88,9 @@ class BaseField(object):
 
         for validator in self.validators:
             validator(value)
+            
+    def get_display(self):
+        return self.label.title()
 
     def __repr__(self):
         return "<Field: 'Field Name: {}'".format(self.name)
@@ -117,7 +132,10 @@ class BooleanField(BaseField):
 class DateTimeField(BaseField):
 
     def clean(self, value):
-        return value
+        if isinstance(value, datetime):
+            return value
+        else:
+            return parser.parse(str(value))
 
 class ContractField(BaseField):
     """
