@@ -8,11 +8,11 @@ class TestDataField(unittest.TestCase):
 
     def test_null(self):
         field = StringField(null=False)
-        self.assertEqual(field.prepare_value("I am a string"), "I am a string")
+        self.assertEqual(field._prepare_value("I am a string"), "I am a string")
 
         field.null = False
         with self.assertRaises(ValidationError):
-            field.prepare_value(None)
+            field._prepare_value(None)
 
 class TestDateField(unittest.TestCase):
     

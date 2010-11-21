@@ -33,7 +33,7 @@ class DataContractMetaClass(type):
         for name, field in fields.iteritems():
             override = field_overrides.pop(name, None)
             if override:
-                field.apply_field_override(override)
+                field._apply_field_override(override)
 
         if len(field_overrides) > 0:
             raise AttributeError("One or more field_overrides did not match a field.")
@@ -68,6 +68,7 @@ class DataContract(object):
 
     def __init__(self, **kwargs):
         self._data = OrderedDict()
+        self._errors = {}
 
         # Set default values for all fields
         for name, field in self.fields.iteritems():
@@ -83,20 +84,26 @@ class DataContract(object):
         if field == None:
             raise KeyError("Field '%s' was not found in the fields list." % field_name)
 
-        self._data[field.name] = field.prepare_value(field_value)
+        self._data[field.name] = field._prepare_value(field_value)
 
     def is_valid(self):
-        try:
-            for field in self.fields.itervalues():
-                field.validate(self[field.name])
-        except ValidationError:
-            return False
-        return True
+        self._errors = {}
+        for field in self.fields.itervalues():
+            try:
+                field._validate(self[field.name])
+            except ValidationError as exc:
+                self._errors[field.name] = exc.message
+        return len(self._errors) > 0
 
     def __hash__(self):
         return super(DataContract, self).__hash__()
 
-    ### Methods to emulate the behavior of a dictionary ###        
+    ### Methods to emulate the behavior of a dictionary ###
+    
+    
+    def itererrors(self):
+        for field_name, error_message in self._errors:
+            yield (field_name, error_message,)        
 
     def iteritems(self):
         for key, value in self._data.iteritems():
@@ -105,6 +112,10 @@ class DataContract(object):
     def itervalues(self):
         for value in self._data.itervalues():
             yield value
+            
+    def iterkeys(self):
+        for key in self._data.iterkeys():
+            yield key
 
     def iterfields(self):
         for field in self.fields.itervalues():

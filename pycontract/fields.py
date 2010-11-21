@@ -29,11 +29,12 @@ class BaseField(object):
         # Calculated fields
         self.name = ""
 
-    def prepare_value(self, value):
+    def _prepare_value(self, value):
         """
-        Called when a field is set.
+        Called when a field is set.  value is input, return is the processed value.
+        The value is not validated at this time.
         """
-        result = self.process(value)
+        result = self._process(value)
         if result is None:
             if self.default:
                 if isinstance(self.default, collections.Callable):
@@ -41,10 +42,9 @@ class BaseField(object):
                 else:
                     result = self.default 
         result = self.clean(result)
-        self.validate(result)
         return result
 
-    def process(self, value):
+    def _process(self, value):
         """
         Runs all processors for this field.
         """
@@ -54,7 +54,7 @@ class BaseField(object):
 
         return result
 
-    def apply_field_override(self, o):
+    def _apply_field_override(self, o):
 
         order = o.pop("order", None)
         default = o.pop("default", None)
@@ -79,7 +79,7 @@ class BaseField(object):
         """
         pass
 
-    def validate(self, value):
+    def _validate(self, value):
         """
         Runs all validators for this field.
         """
@@ -145,10 +145,10 @@ class ContractField(BaseField):
     def clean(self, value):
         return value
 
-    def validate(self, value):
-        """Override the validate to call validate on the fields of the datacontract child."""
+    def _validate(self, value):
+        """Override the _validate to call _validate on the fields of the datacontract child."""
         for field in value.fields:
-            field.validate()
+            field._validate()
             
 class ContractListField(BaseField):
     """
@@ -158,7 +158,7 @@ class ContractListField(BaseField):
     def clean(self, value):
         return value
     
-    def validate(self, value):
+    def _validate(self, value):
         for contract in value:
             for field in contract.fields:
-                field.validate()
+                field._validate()
