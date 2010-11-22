@@ -10,6 +10,9 @@ def strip_white_space(value):
 def upper_case(value):
     return str(value).upper()
 
+def lower_case(value):
+    return str(value).lower()
+
 class StringLeft(object):
     
     def __init__(self, max_characters):

@@ -17,10 +17,3 @@ class Employee(Person):
         "phone": dict(order=3)
     }
 
-
-e = Employee(phone="asd", employeeid="2asd", department="Our dept")
-
-print e.is_valid()
-print e.name
-print e.hire_date
-print e._errors

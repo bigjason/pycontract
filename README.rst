@@ -4,11 +4,11 @@ Python Data Contracts
 A declarative data contract container type for Python
 ------------------------------------------------------
 
-*Pycontracts is currently an internal beta and not ready for production use yet.*
+*Pycontracts is currently an internal alpha and not ready for production use.*
 
 
 Python data contracts (pycontracts in PyPi) is a  library for exchanging data between
-systems.  It is losesly based on the django forms api to help ease adoption. A simple example::
+systems.  It is loosely based on the django forms api to help ease adoption. A simple example::
 
     from pycontract import DataContract, StringField, NumberField
     

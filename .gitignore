@@ -1,4 +1,6 @@
 .project
 .pydevproject
 *.pyc
+dist
+pycontract.egg-info
 
