@@ -17,3 +17,8 @@ class Employee(Person):
         "phone": dict(order=3)
     }
 
+
+e = Employee(name="Jason", phone="asd", employeeid="2asd", department="Our dept")
+
+print e.is_valid()
+print e._errors

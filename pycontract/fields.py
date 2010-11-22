@@ -1,4 +1,5 @@
 import abc
+import sys
 import collections
 from datetime import datetime
 
@@ -31,8 +32,8 @@ class BaseField(object):
 
     def _prepare_value(self, value):
         """
-        Called when a field is set.  value is input, return is the processed value.
-        The value is not validated at this time.
+        Called when the user calls is_valid().  This is where values are processed and prepared
+        for use.
         """
         result = self._process(value)
         if result is None:
@@ -42,6 +43,7 @@ class BaseField(object):
                 else:
                     result = self.default 
         result = self.clean(result)
+        self._validate(result)
         return result
 
     def _process(self, value):
@@ -119,6 +121,32 @@ class NumberField(BaseField):
         except:
             raise UnableToCleanError("Unable to clean number value.")
         return cleaned
+
+class IntField(BaseField):
+    MAX_INT = sys.maxint
+    MIN_INT = -sys.maxint - 1
+    
+    def clean(self, value):
+        cleaned = None
+        try:
+            cleaned = int(value) if value != None else value
+        except:
+            raise UnableToCleanError("The value '%s' is not a valid int." % str(value))
+        
+        if cleaned != None and (cleaned > self.MAX_INT or cleaned < self.MIN_INT):
+            raise UnableToCleanError("The value is outside the bounds of an int.")
+        
+        return cleaned
+    
+class LongField(BaseField):
+    
+    def clean(self, value):
+        try:
+            cleaned = long(value) if value != None else value
+        except:
+            raise UnableToCleanError("Unable to clean number value.")
+        return cleaned
+        
 
 class BooleanField(BaseField):
 

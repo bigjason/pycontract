@@ -84,16 +84,16 @@ class DataContract(object):
         if field == None:
             raise KeyError("Field '%s' was not found in the fields list." % field_name)
 
-        self._data[field.name] = field._prepare_value(field_value)
+        self._data[field.name] = field_value
 
     def is_valid(self):
         self._errors = {}
         for field in self.fields.itervalues():
             try:
-                field._validate(self[field.name])
-            except ValidationError as exc:
+                self.set_value(field.name, field._prepare_value(self[field.name]))
+            except Exception as exc:
                 self._errors[field.name] = exc.message
-        return len(self._errors) > 0
+        return len(self._errors) == 0
 
     def __hash__(self):
         return super(DataContract, self).__hash__()

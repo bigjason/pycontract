@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, date
 
-from pycontract.fields import BaseField, StringField, DateTimeField
+from pycontract.fields import *
 from pycontract.exceptions import UnableToCleanError, ValidationError
 
 class TestDataField(unittest.TestCase):
@@ -45,3 +45,31 @@ class TestDateField(unittest.TestCase):
         
         with self.assertRaises(ValueError):
             self.field.clean("I am no date")
+
+class TestIntField(unittest.TestCase):
+    def setUp(self):
+        self.field = IntField()
+
+    def tearDown(self):
+        del self.field
+    
+    def test_normal_int(self):
+        self.assertEqual(self.field.clean(12), 12)
+        
+    def test_str_values(self):
+        values = (
+            ("123", 123),
+            ("-123", -123),
+        )
+        
+        for input, expected in values:
+            self.assertEqual(self.field.clean(input), expected, "Value '%s' had an error." % input)
+            
+    def test_long_failure(self):
+        
+        with self.assertRaises(UnableToCleanError):
+            self.field.clean("324234234234234234234234")
+        
+        with self.assertRaises(UnableToCleanError):
+            self.field.clean(324234234234234234234234)
+      
