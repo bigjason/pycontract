@@ -72,7 +72,7 @@ class DataContract(object):
 
         # Set default values for all fields
         for name, field in self.fields.iteritems():
-            self._data[name] = field.default
+            self._data[name] = field._get_default()
 
         # Set initial values if any were provided
         for field_name in kwargs:

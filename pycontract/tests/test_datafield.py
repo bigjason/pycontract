@@ -3,6 +3,7 @@ from datetime import datetime, date
 
 from pycontract.fields import *
 from pycontract.exceptions import UnableToCleanError, ValidationError
+from pycontract.contract import DataContract
 
 class TestDataField(unittest.TestCase):
 
@@ -13,6 +14,22 @@ class TestDataField(unittest.TestCase):
         field.null = False
         with self.assertRaises(ValidationError):
             field._prepare_value(None)
+            
+    def test_default_callable(self):
+        expected = "Test Value"
+        class Dummy(DataContract):
+            callable = StringField(default=lambda: expected)
+            
+        tester = Dummy()
+        self.assertEqual(tester.callable, expected)
+        
+    def test_default_value(self):
+        expected = 1002
+        class Dummy(DataContract):
+            val = IntField(default=expected)
+            
+        tester = Dummy()
+        self.assertEqual(tester.val, expected)
 
 class TestDateField(unittest.TestCase):
     

@@ -1,3 +1,7 @@
+"""
+For more ready to validators, see the django project.
+"""
+
 import re
 from pycontract.exceptions import ValidationError
 

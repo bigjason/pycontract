@@ -29,6 +29,15 @@ class BaseField(object):
 
         # Calculated fields
         self.name = ""
+        
+    def _get_default(self):
+        if self.default:
+            if isinstance(self.default, collections.Callable):
+                return self.default()
+            else:
+                return self.default
+        else:
+            return None 
 
     def _prepare_value(self, value):
         """
@@ -36,12 +45,8 @@ class BaseField(object):
         for use.
         """
         result = self._process(value)
-        if result is None:
-            if self.default:
-                if isinstance(self.default, collections.Callable):
-                    result = self.default()
-                else:
-                    result = self.default 
+        if result == None:
+            result = self._get_default()
         result = self.clean(result)
         self._validate(result)
         return result
