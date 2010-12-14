@@ -94,6 +94,18 @@ class DataContract(object):
             except Exception as exc:
                 self._errors[field.name] = exc.message
         return len(self._errors) == 0
+    
+    def to_list(self):
+        """
+        Return a list of values suitable for use with the python csv library.
+        """
+        return [value for value in self.itervalues()]
+    
+    def to_header_list(self):
+        """
+        Return a list of headers suitable for use with the python csv library.        
+        """
+        return [key for key in self.iterkeys()]
 
     def __hash__(self):
         return super(DataContract, self).__hash__()

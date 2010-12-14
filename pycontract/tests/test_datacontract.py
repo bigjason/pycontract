@@ -83,3 +83,27 @@ class TestDataContract(unittest.TestCase):
 
         self.assertEqual(OrderTester.fields.popitem(last=False)[0], "BField")
         self.assertEqual(OrderTester.fields.popitem(last=False)[0], "AField")
+
+    def test_to_list(self):
+        STRING_VAL = "Test string"
+        INT_VAL = 12345
+        DATE_VAL = datetime.datetime.now()
+
+        tester = DataContractTester(string_value=STRING_VAL, int_value=INT_VAL, date_value=DATE_VAL)
+        result = tester.to_list()
+        
+        self.assertIn(STRING_VAL, result)
+        self.assertIn(INT_VAL, result)
+        self.assertIn(DATE_VAL, result)
+
+    def test_header_list(self):
+        STRING_VAL = "string_value"
+        INT_VAL = "int_value"
+        DATE_VAL = "date_value"
+
+        tester = DataContractTester(string_value=STRING_VAL, int_value=INT_VAL, date_value=DATE_VAL)
+        result = tester.to_header_list()
+        
+        self.assertIn(STRING_VAL, result)
+        self.assertIn(INT_VAL, result)
+        self.assertIn(DATE_VAL, result)
