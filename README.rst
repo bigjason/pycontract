@@ -1,3 +1,11 @@
+========================
+Dead Project, Move Along
+========================
+
+**I am no longer maintaining this project. If it interests you I would be glad to hand it over.**
+
+_________________
+
 ============================
 Python Data Contracts
 ============================
